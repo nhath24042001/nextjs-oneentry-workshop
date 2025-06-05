@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -6,15 +8,74 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { defineOneEntry } from 'oneentry';
+import { useEffect, useState } from 'react';
+import { FormField } from '@/typings';
+import { IAuthPostBody } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
+import { useRouter } from 'next/navigation';
+
+const { Forms, AuthProvider, Users } = defineOneEntry('https://qkit-software.oneentry.cloud/', { token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTmV4dEpTIDE1Iiwic2VyaWFsTnVtYmVyIjoxLCJpYXQiOjE3NDg4MzM1NzMsImV4cCI6MTc4MDM2OTU1OX0.lkK17ZJyGUg-rY90XGNo7R-XKF4etHJq_tMt2V0ozY8' })
+
 
 export default function LoginPage() {
+    const router = useRouter();
+    const [formField, setFormField] = useState<FormField[]>([]);
+    const [userData, setUserData] = useState({
+        email: '',
+        password: '',
+    });
+
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>, marker: string) => {
+        const { value } = e.target;
+        setUserData((prevData) => ({
+            ...prevData,
+            [marker]: value
+        }));
+    }
+
+    useEffect(() => {
+        const oneEntry = async () => {
+            const value = await Forms.getFormByMarker('login-form', 'en_US');
+            setFormField(value.attributes);
+        }
+
+        oneEntry();
+    }, [])
+
+    const sendUserData = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const data: IAuthPostBody = {
+                authData: [
+                    {
+                        marker: "email",
+                        value: userData.email
+                    },
+                    {
+                        marker: "password",
+                        value: userData.password
+                    }
+                ]
+            }
+            const value = await AuthProvider.auth('email', data)
+            const users = await Users.getUser();
+            if (users.identifier === value.userIdentifier) {
+                router.push('/workshop');
+            }
+
+            console.log('value', value);
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    }
     return (
         <div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
             <div className="w-full max-w-sm md:max-w-3xl">
                 <div className={cn('flex flex-col gap-6')}>
                     <Card className="overflow-hidden p-0">
                         <CardContent className="grid p-0 md:grid-cols-2">
-                            <form className="p-6 md:p-8">
+                            <form className="p-6 md:p-8" onSubmit={sendUserData}>
                                 <div className="flex flex-col gap-6">
                                     <div className="flex flex-col items-center text-center">
                                         <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -22,19 +83,19 @@ export default function LoginPage() {
                                             Login to your workshop account
                                         </p>
                                     </div>
-                                    <div className="grid gap-3">
-                                        <Label htmlFor="email">Email</Label>
-                                        <Input id="email" type="email" placeholder="example@gmail.com" required />
-                                    </div>
-                                    <div className="grid gap-3">
-                                        <div className="flex items-center">
-                                            <Label htmlFor="password">Password</Label>
-                                            <a href="#" className="ml-auto text-sm underline-offset-2 hover:underline">
-                                                Forgot your password?
-                                            </a>
+
+                                    {formField.map((field, index) => (
+                                        <div key={index} className="grid gap-3">
+                                            <Label htmlFor={field.localizeInfos.title} className='capitalize'>{field.marker}</Label>
+                                            <Input
+                                                id={field.localizeInfos.title}
+                                                type={field.marker === 'password' ? 'password' : 'text'}
+                                                placeholder={field.localizeInfos.title}
+                                                required
+                                                onChange={(e) => handleChange(e, field.marker)}
+                                            />
                                         </div>
-                                        <Input id="password" type="password" placeholder="******" required />
-                                    </div>
+                                    ))}
                                     <Button type="submit" className="w-full">
                                         Login
                                     </Button>
