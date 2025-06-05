@@ -21,13 +21,14 @@ export default function SignupPage() {
         name: '',
         password: '',
         phone: '',
-        address: ''
+        address: '',
     });
 
     useEffect(() => {
         const oneEntry = async () => {
             const value = await Forms.getFormByMarker('sign-up-form', 'en_US');
-            setFormField(value.attributes);
+            const formFields = value.attributes.filter((field: FormField) => field.marker !== 'role');
+            setFormField(formFields);
         }
 
         oneEntry();
@@ -72,6 +73,11 @@ export default function SignupPage() {
                         type: "string",
                         value: userData.address
                     },
+                    {
+                        marker: "role",
+                        type: "string",
+                        value: "user"
+                    }
                 ],
                 notificationData: {
                     email: "test@test.zone",
