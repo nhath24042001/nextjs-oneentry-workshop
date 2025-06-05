@@ -1,12 +1,92 @@
+'use client';
+
 import Image from 'next/image';
+import { defineOneEntry } from "oneentry";
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useEffect, useState } from 'react';
+import { FormField } from '@/typings';
+import { ISignUpData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
+
+const { Forms, AuthProvider } = defineOneEntry('https://qkit-software.oneentry.cloud/', { token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTmV4dEpTIDE1Iiwic2VyaWFsTnVtYmVyIjoxLCJpYXQiOjE3NDg4MzM1NzMsImV4cCI6MTc4MDM2OTU1OX0.lkK17ZJyGUg-rY90XGNo7R-XKF4etHJq_tMt2V0ozY8' })
 
 export default function SignupPage() {
+    const [formField, setFormField] = useState<FormField[]>([]);
+    const [userData, setUserData] = useState({
+        email: '',
+        name: '',
+        password: '',
+        phone: '',
+        address: ''
+    });
+
+    useEffect(() => {
+        const oneEntry = async () => {
+            const value = await Forms.getFormByMarker('sign-up-form', 'en_US');
+            setFormField(value.attributes);
+        }
+
+        oneEntry();
+    }, [])
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>, marker: string) => {
+        const { value } = e.target;
+        setUserData((prevData) => ({
+            ...prevData,
+            [marker]: value
+        }));
+    }
+
+    const sendUserData = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const data: ISignUpData = {
+                formIdentifier: "sign-up-form",
+                authData: [
+                    {
+                        marker: "email",
+                        value: userData.email
+                    },
+                    {
+                        marker: "password",
+                        value: userData.password
+                    }
+                ],
+                formData: [
+                    {
+                        marker: "name",
+                        type: "string",
+                        value: userData.name
+                    },
+                    {
+                        marker: "phone",
+                        type: "string",
+                        value: userData.phone
+                    },
+                    {
+                        marker: "address",
+                        type: "string",
+                        value: userData.address
+                    },
+                ],
+                notificationData: {
+                    email: "test@test.zone",
+                    phonePush: [],
+                    phoneSMS: "+19991234567"
+                }
+            }
+
+            await AuthProvider.signUp('email', data);
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    }
+
+
     return (
         <>
             <div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
@@ -14,7 +94,7 @@ export default function SignupPage() {
                     <div className={cn('flex flex-col gap-6')}>
                         <Card className="overflow-hidden p-0">
                             <CardContent className="grid p-0 md:grid-cols-2">
-                                <form className="p-6 md:p-8">
+                                <form className="p-6 md:p-8" onSubmit={sendUserData}>
                                     <div className="flex flex-col gap-6">
                                         <div className="flex flex-col items-center text-center">
                                             <h1 className="text-2xl font-bold">Create an account</h1>
@@ -22,23 +102,19 @@ export default function SignupPage() {
                                                 Enter your email below to create your account
                                             </p>
                                         </div>
-                                        <div className="grid gap-3">
-                                            <Label htmlFor="email">Email</Label>
-                                            <Input id="email" type="email" placeholder="example@gmail.com" required />
-                                        </div>
-                                        <div className="grid gap-3">
-                                            <div className="flex items-center">
-                                                <Label htmlFor="password">Password</Label>
-                                            </div>
-                                            <Input id="password" type="password" placeholder="******" required />
-                                        </div>
 
-                                        <div className="grid gap-3">
-                                            <div className="flex items-center">
-                                                <Label htmlFor="password">Confirm Password</Label>
+                                        {formField.map((field, index) => (
+                                            <div key={index} className="grid gap-3">
+                                                <Label htmlFor={field.localizeInfos.title} className='capitalize'>{field.marker}</Label>
+                                                <Input
+                                                    id={field.localizeInfos.title}
+                                                    type={field.marker === 'password' ? 'password' : 'text'}
+                                                    placeholder={field.localizeInfos.title}
+                                                    required
+                                                    onChange={(e) => handleChange(e, field.marker)}
+                                                />
                                             </div>
-                                            <Input id="password" type="password" placeholder="******" required />
-                                        </div>
+                                        ))}
                                         <Button type="submit" className="w-full">
                                             Signup
                                         </Button>
