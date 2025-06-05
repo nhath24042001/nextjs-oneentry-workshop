@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 import { FormField } from '@/typings';
 import { ISignUpData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 
-const { Forms, AuthProvider } = defineOneEntry('https://qkit-software.oneentry.cloud/', { token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTmV4dEpTIDE1Iiwic2VyaWFsTnVtYmVyIjoxLCJpYXQiOjE3NDg4MzM1NzMsImV4cCI6MTc4MDM2OTU1OX0.lkK17ZJyGUg-rY90XGNo7R-XKF4etHJq_tMt2V0ozY8' })
+const { Forms, AuthProvider } = defineOneEntry(process.env.NEXT_PUBLIC_ONEENTRY_DOMAIN as string, { token: process.env.NEXT_PUBLIC_ONEENTRY_TOKEN })
 
 export default function SignupPage() {
     const [formField, setFormField] = useState<FormField[]>([]);
