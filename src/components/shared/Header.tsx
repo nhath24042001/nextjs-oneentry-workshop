@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const Header = () => {
   return (
     <header className="sticky top-0 z-50 bg-white">
-      <div className="flex justify-between items-center py-4 px-4">
+      <div className="flex justify-between items-center py-2 px-4">
         <nav className="hidden md:flex gap-6 text-sm font-medium">
           <Link href={'/buy'}>BUY</Link>
           <Link href={'/sel'}>SELL</Link>

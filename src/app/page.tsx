@@ -1,11 +1,12 @@
 import { Header } from "@/components/shared/Header";
+import HeroSection from "@/components/shared/Hero";
 
 export default function Page() {
   return (
     <>
       <Header />
       <main>
-        <h1>h1</h1>
+        <HeroSection />
       </main>
     </>
   )
