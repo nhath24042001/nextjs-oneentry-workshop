@@ -16,7 +16,6 @@ export interface Registration {
   payment_id: string;
 }
 
-
 export interface FormField {
   type: string;
   marker: string;
@@ -35,4 +34,13 @@ export interface FormField {
 }
 export interface LocalizeInfos {
   title: string;
+}
+
+export interface IProperty {
+  id: number;
+  name: string;
+  image: string;
+  location: string;
+  price: string;
+  type: string;
 }
