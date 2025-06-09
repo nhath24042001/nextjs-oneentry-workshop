@@ -32,7 +32,7 @@ const featuredCollection = [
 export default function FeaturedCollection() {
     return (
         <Reveal>
-            <section className="relative">
+            <section className="relative ">
                 <div className="relative z-10 px-8 py-16">
                     <div className="flex justify-between items-center mb-8">
                         <div></div>
@@ -53,6 +53,15 @@ export default function FeaturedCollection() {
                             </div>
 
                             <div className="relative w-full h-full">
+                                <div
+                                    className="absolute -top-1 left-0 w-full h-16 bg-[#f6f1ee]"
+                                    style={{
+                                        clipPath: 'polygon(0 0, 100% 0, 100% 80%, 0 100%)',
+                                        zIndex: 10,
+                                        width: '100.1%'
+                                    }}
+                                />
+
                                 <Image
                                     src={'/images/bg-feature-collection.jpg'}
                                     fill

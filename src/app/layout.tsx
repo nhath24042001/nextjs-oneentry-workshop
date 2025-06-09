@@ -2,6 +2,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 
+// Sansita
+
 export const metadata: Metadata = {
   title: 'The Modern House',
   description: '',

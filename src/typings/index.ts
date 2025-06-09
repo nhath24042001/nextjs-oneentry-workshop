@@ -44,3 +44,11 @@ export interface IProperty {
   price: string;
   type: string;
 }
+
+export interface QuoteSectionProps {
+  quote: string;
+  author: string;
+  buttonText: string;
+  backgroundColor?: string;
+  textColor?: string;
+}

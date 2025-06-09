@@ -6,15 +6,14 @@ export default function FeaturedProperty() {
     return (
         <Reveal>
             <section className="relative bg-[#f6f1ee]">
-                {/* !TODO:  */}
-                {/* <div
-                className="absolute top-0 left-0 w-full h-16 bg-white"
-                style={{
-                    clipPath: 'polygon(0 0, 100% 0, 100% 60%, 0% 100%)',
-                }}
-            /> */}
+                <div
+                    className="absolute top-0 left-0 w-full h-16 bg-white"
+                    style={{
+                        clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 80%)',
+                    }}
+                />
 
-                <div className="relative z-10 px-8 py-16">
+                <div className="relative z-10 px-8 py-20">
                     <div className="flex justify-between items-center mb-8">
                         <div></div>
                         <h2 className="text-lg tracking-wide uppercase">Featured Sales</h2>

@@ -11,7 +11,7 @@ export const Header = () => {
           <Link href={'/journey'}>JOURNEY</Link>
         </nav>
 
-        <Link href="/" className="text-xl font-bold tracking-tight lowercase">
+        <Link href="/" className="text-xl font-bold tracking-tight">
           THE MODERN HOUSE
         </Link>
 
