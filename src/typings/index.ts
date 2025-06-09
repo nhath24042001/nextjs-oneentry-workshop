@@ -43,6 +43,9 @@ export interface IProperty {
   location: string;
   price: string;
   type: string;
+  slug: string;
+  description: string;
+  featuredImage: string[];
 }
 
 export interface QuoteSectionProps {

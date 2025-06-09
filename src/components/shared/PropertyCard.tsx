@@ -1,8 +1,10 @@
+import Link from "next/link";
+
 import { IProperty } from "@/typings";
 
 export default function PropertyCard({ property }: { property: IProperty }) {
     return (
-        <div className="group overflow-hidden cursor-pointer">
+        <Link href={`/sales-list/${property.slug}`} className="group overflow-hidden cursor-pointer">
             <div className="aspect-[4/3] overflow-hidden">
                 <img src={property.image} alt={property.image} className="object-cover w-full h-full group-hover:scale-105 transition-transform" />
             </div>
@@ -16,6 +18,6 @@ export default function PropertyCard({ property }: { property: IProperty }) {
                     <p className="text-sm text-gray-500">{property.type}</p>
                 </div>
             </div>
-        </div>
+        </Link>
     )
 }

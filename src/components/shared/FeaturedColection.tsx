@@ -1,4 +1,5 @@
 import Image from "next/image"
+
 import Reveal from "./Reveal"
 import CollectionCard from "./CollectionCard"
 
