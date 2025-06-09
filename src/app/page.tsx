@@ -1,6 +1,8 @@
-import { redirect } from 'next/navigation';
 
 export default function Page() {
-
-  redirect('/auth/login');
+  return (
+    <main>
+      <h1>h1</h1>
+    </main>
+  )
 }

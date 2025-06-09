@@ -63,8 +63,6 @@ export default function LoginPage() {
             if (users.identifier === value.userIdentifier) {
                 router.push('/workshop');
             }
-
-            console.log('value', value);
         } catch (error) {
             console.error('Error submitting form:', error);
         }

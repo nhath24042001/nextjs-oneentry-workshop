@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Workshop Portal',
-  description: 'Đăng ký và quản lý các buổi workshop',
+  title: 'Real Estate',
+  description: 'A simple real estate website',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
