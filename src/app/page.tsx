@@ -1,8 +1,12 @@
+import { Header } from "@/components/shared/Header";
 
 export default function Page() {
   return (
-    <main>
-      <h1>h1</h1>
-    </main>
+    <>
+      <Header />
+      <main>
+        <h1>h1</h1>
+      </main>
+    </>
   )
 }
