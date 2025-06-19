@@ -2,12 +2,18 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { Header } from "@/components/shared/Header";
-import { IProperty } from "@/typings";
 import { properties } from "@/data/property";
+interface PageProps {
+    params: {
+        slug: string;
+    };
+}
 
-export default async function SaleDetailPage({ params }: { params: IProperty }) {
-    const { slug } = await params;
-    const property = properties.find((property) => property.slug === slug);
+export default function SaleDetailPage({ params }: PageProps) {
+
+    const property = properties.find((property) => property.slug === params.slug);
+
+    console.log('sale detail page', property);
 
     if (!property) {
         return notFound();

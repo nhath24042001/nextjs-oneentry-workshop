@@ -16,6 +16,8 @@ const { Forms, AuthProvider } = defineOneEntry(process.env.NEXT_PUBLIC_ONEENTRY_
 
 export default function SignupPage() {
     const [formField, setFormField] = useState<FormField[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [userData, setUserData] = useState({
         email: '',
         name: '',
@@ -30,8 +32,8 @@ export default function SignupPage() {
             const formFields = value.attributes.filter((field: FormField) => field.marker !== 'role');
             setFormField(formFields);
         }
-
         oneEntry();
+        setIsLoading(false);
     }, [])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>, marker: string) => {
@@ -44,7 +46,11 @@ export default function SignupPage() {
 
     const sendUserData = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSubmitting(true);
         try {
+
+            const value = await Forms.getFormByMarker('sign-up-form', 'en_US')
+            console.log('value', value);
             const data: ISignUpData = {
                 formIdentifier: "sign-up-form",
                 authData: [
@@ -55,7 +61,7 @@ export default function SignupPage() {
                     {
                         marker: "password",
                         value: userData.password
-                    }
+                    },
                 ],
                 formData: [
                     {
@@ -73,11 +79,6 @@ export default function SignupPage() {
                         type: "string",
                         value: userData.address
                     },
-                    {
-                        marker: "role",
-                        type: "string",
-                        value: "user"
-                    }
                 ],
                 notificationData: {
                     email: "test@test.zone",
@@ -86,10 +87,19 @@ export default function SignupPage() {
                 }
             }
 
-            await AuthProvider.signUp('email', data);
+            console.log("✅ authData:", data.authData);
+
+            const response = await AuthProvider.signUp('email', data);
+
+            if (response.isActive) {
+                window.location.href = '/auth/login';
+            }
         } catch (error) {
             console.error('Error submitting form:', error);
+        } finally {
+            setIsSubmitting(false);
         }
+
     }
 
 
@@ -98,7 +108,9 @@ export default function SignupPage() {
             <div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
                 <div className="w-full max-w-sm md:max-w-3xl">
                     <div className={cn('flex flex-col gap-6')}>
-                        <Card className="overflow-hidden p-0">
+                        {isLoading ? <div className="flex justify-center items-center py-20">
+                            <div className="animate-spin rounded-full h-8 w-8 border-4 border-muted border-t-primary"></div>
+                        </div> : <Card className="overflow-hidden p-0">
                             <CardContent className="grid p-0 md:grid-cols-2">
                                 <form className="p-6 md:p-8" onSubmit={sendUserData}>
                                     <div className="flex flex-col gap-6">
@@ -121,8 +133,18 @@ export default function SignupPage() {
                                                 />
                                             </div>
                                         ))}
-                                        <Button type="submit" className="w-full">
-                                            Signup
+                                            <Button type="submit" className="w-full" disabled={isSubmitting}>
+                                                {isSubmitting ? (
+                                                    <>
+                                                        <svg className="animate-spin h-4 w-4 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                                        </svg>
+                                                        Signing up...
+                                                    </>
+                                                ) : (
+                                                    'Signup'
+                                                )}
                                         </Button>
                                     </div>
                                 </form>
@@ -136,7 +158,7 @@ export default function SignupPage() {
                                     />
                                 </div>
                             </CardContent>
-                        </Card>
+                        </Card>}
                         <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
                             By clicking continue, you agree to our <a href="#">Terms of Service</a> and{' '}
                             <a href="#">Privacy Policy</a>.

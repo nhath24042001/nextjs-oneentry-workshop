@@ -60,8 +60,12 @@ export default function LoginPage() {
             }
             const value = await AuthProvider.auth('email', data)
             const users = await Users.getUser();
+
+            localStorage.setItem('token', value.accessToken);
+            localStorage.setItem('user', JSON.stringify(users.formData));
+
             if (users.identifier === value.userIdentifier) {
-                router.push('/workshop');
+                router.push('/');
             }
         } catch (error) {
             console.error('Error submitting form:', error);
