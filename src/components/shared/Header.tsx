@@ -1,19 +1,32 @@
 'use client';
-import { Button } from '../ui/button';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { Button } from '../ui/button';
 
 export const Header = () => {
-  const userData = localStorage.getItem('user');
-  const data = JSON.parse(userData);
-  const userName = data?.filter((item) => item.marker === 'name')[0].value;
+  const [userName, setUserName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        const data = JSON.parse(userData);
+        const name = data?.find((item) => item.marker === 'name')?.value;
+        setUserName(name);
+      } catch (err) {
+        console.error('Failed to parse user data from localStorage', err);
+      }
+    }
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 bg-white">
       <div className="flex justify-between items-center py-2 px-4">
         <nav className="hidden md:flex gap-6 text-sm font-medium">
-          <Link href={'/buy'}>BUY</Link>
-          <Link href={'/sel'}>SELL</Link>
-          <Link href={'/journey'}>JOURNEY</Link>
+          <Link href="/buy">BUY</Link>
+          <Link href="/sel">SELL</Link>
+          <Link href="/journey">JOURNEY</Link>
         </nav>
 
         <Link href="/" className="text-xl font-bold tracking-tight">

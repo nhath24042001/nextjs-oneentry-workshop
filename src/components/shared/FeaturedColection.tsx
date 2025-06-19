@@ -35,7 +35,7 @@ export default function FeaturedCollection() {
         <Reveal>
             <section className="relative ">
                 <div className="relative z-10 px-8 py-16">
-                    <div className="mx-auto flex justify-between items-center mb-8">
+                    <div className="flex justify-between items-center mb-8">
                         <div></div>
                         <h2 className="text-lg tracking-wide uppercase">Featured Collections</h2>
                         <button className="border border-black px-4 py-2 text-sm uppercase hover:bg-black hover:text-white transition-all">

@@ -2,18 +2,33 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { Header } from "@/components/shared/Header";
-import { properties } from "@/data/property";
+import { defineOneEntry } from "oneentry";
+
+const { Products } = defineOneEntry(process.env.NEXT_PUBLIC_ONEENTRY_DOMAIN as string, { token: process.env.NEXT_PUBLIC_ONEENTRY_TOKEN })
+
 interface PageProps {
     params: {
         slug: string;
     };
 }
 
-export default function SaleDetailPage({ params }: PageProps) {
+export default async function SaleDetailPage({ params }: PageProps) {
+    const productList = (await Products.getProducts()).items;
+    const formatProduct = productList.map((product) => {
+        return {
+            id: product.id,
+            slug: product.attributeValues.slug.value,
+            name: product.attributeValues.name.value,
+            description: product.attributeValues.description.value,
+            price: product.attributeValues.price.value,
+            image: product.attributeValues.image.value.downloadLink,
+            location: product.attributeValues.location.value,
+            type: product.attributeValues.type.value,
+            featuredimage: product.attributeValues.featuredimage.value.map((image) => image.downloadLink),
+        };
+    })
 
-    const property = properties.find((property) => property.slug === params.slug);
-
-    console.log('sale detail page', property);
+    const property = formatProduct.find((property) => property.slug === params.slug);
 
     if (!property) {
         return notFound();
@@ -64,7 +79,7 @@ export default function SaleDetailPage({ params }: PageProps) {
                 </section>
 
                 <section className="container mx-auto grid grid-cols-2 gap-10 my-10">
-                    {property.featuredImage.map((image, index) => (
+                    {property.featuredimage.map((image, index) => (
                         <div key={index} className="relative w-full h-[50vh] aspect-[4/3]">
                             <Image
                                 src={`/images/feature-img.jpg`}
